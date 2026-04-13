@@ -1,7 +1,10 @@
 <template>
   <div class="user-layout">
     <div class="user-sidebar">
-      <div class="logo">星辰 · 用户端</div>
+      <div class="logo-container">
+        <img :src="logoSrc" class="user-logo" alt="logo" />
+        <div class="logo-text">星辰 · 用户端</div>
+      </div>
       <div class="menu">
         <div class="menu-item active">首页</div>
         <div class="menu-item" @click="router.push('/profile')">个人中心</div>
@@ -65,6 +68,7 @@ import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import request from '@/api/request'
 import { ElMessage } from 'element-plus'
+import logoSrc from '@/assets/logo.png'
 
 const router = useRouter()
 const username = ref('用户')
@@ -104,12 +108,25 @@ const handleLogout = async () => {
   display: flex;
   flex-direction: column;
   
-  .logo {
-    color: var(--primary);
-    font-size: 24px;
-    font-weight: bold;
+  .logo-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     margin-bottom: 60px;
-    text-align: center;
+    
+    .user-logo {
+      width: 64px;
+      height: 64px;
+      margin-bottom: 12px;
+      object-fit: contain;
+    }
+    
+    .logo-text {
+      color: var(--primary);
+      font-size: 20px;
+      font-weight: bold;
+      text-align: center;
+    }
   }
   
   .menu-item {

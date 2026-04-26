@@ -1,17 +1,18 @@
-######################################################################
-# Build Tools
+# 依赖目录
+node_modules/
+**/node_modules/
 
-.gradle
-/build/
-!gradle/wrapper/gradle-wrapper.jar
+# 构建输出
+dist/
+**/dist/
+build/
 
-target/
-!.mvn/wrapper/maven-wrapper.jar
-
-######################################################################
-# IDE
-
-### STS ###
+# IDE 配置
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
 .apt_generated
 .classpath
 .factorypath
@@ -19,29 +20,67 @@ target/
 .settings
 .springBeans
 
-### IntelliJ IDEA ###
-.idea
-*.iws
-*.iml
-*.ipr
+# 操作系统文件
+.DS_Store
+Thumbs.db
+desktop.ini
 
-### JRebel ###
+# 日志文件
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# 临时文件
+*.tmp
+*.bak
+*.swp
+*~
+
+# Maven
+target/
+**/target/
+*.class
+*.jar
+*.war
+
+# Gradle
+.gradle
+!gradle/wrapper/gradle-wrapper.jar
+
+# 包锁文件
+package-lock.json
+yarn.lock
+
+# 编辑器文件
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.local
+
+# 其他
+*.xml.versionsBackup
 rebel.xml
-
-### NetBeans ###
 nbproject/private/
-build/*
 nbbuild/
-dist/
-nbdist/
 .nb-gradle/
 
-######################################################################
-# Others
-*.log
-*.xml.versionsBackup
-*.swp
+# Qoder 工具目录
+.qoder/
 
-!*/build/*.java
-!*/build/*.html
-!*/build/*.xml
+# Trae 工具目录
+.trae/
+**/.trae/
+
+# 子目录的 .git 文件夹
+**/.git/
+
+# 压缩包
+*.zip
+*.rar
+*.7z
+
+# 测试覆盖率
+tests/**/coverage/

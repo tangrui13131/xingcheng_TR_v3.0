@@ -1,0 +1,1 @@
+import{s as t}from"./request-fyMa8n7k.js";function n(e){return t({url:"/system/redemption/submit",method:"post",data:e})}function o(){return t({url:"/system/redemption/myList",method:"get"})}function m(){return t({url:"/system/redemption/myPoints",method:"get"})}function r(){return t({url:"/system/pointsLog/checkIn",method:"post"})}export{m as a,r as c,o as g,n as s};

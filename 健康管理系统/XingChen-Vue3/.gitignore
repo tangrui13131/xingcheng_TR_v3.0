@@ -43,6 +43,9 @@ target/
 *.ipr
 
 # Others
+.env*
+*.ini
+fix_password.py
 *.log
 *.xml.versionsBackup
 *.swp

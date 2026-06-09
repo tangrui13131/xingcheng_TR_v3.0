@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import re
 
-file_path = r'e:\RuoYi-Vue\ruoyi-admin\src\main\resources\application-druid.yml'
+file_path = r'YOUR_PROJECT_PATH\src\main\resources\application-druid.yml'
 
 # 读取文件
 with open(file_path, 'r', encoding='utf-8') as f:

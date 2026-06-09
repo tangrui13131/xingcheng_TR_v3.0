@@ -82,5 +82,12 @@ nbbuild/
 *.rar
 *.7z
 
+# 环境配置文件
+.env*
+
+# 本地配置文件和脚本
+*.ini
+fix_password.py
+
 # 测试覆盖率
 tests/**/coverage/

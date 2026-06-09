@@ -103,7 +103,7 @@
 <script setup>
 import { getCodeImg } from "@/api/login"
 import Cookies from "js-cookie"
-import { encrypt, decrypt } from "@/utils/jsencrypt"
+import { encrypt } from "@/utils/jsencrypt"
 import useUserStore from '@/store/modules/user'
 
 const userStore = useUserStore()
@@ -112,8 +112,8 @@ const router = useRouter()
 const { proxy } = getCurrentInstance()
 
 const loginForm = ref({
-  username: "admin",
-  password: "admin123",
+  username: "",
+  password: "",
   rememberMe: false,
   code: "",
   uuid: ""
@@ -140,11 +140,9 @@ function handleLogin() {
       loading.value = true
       if (loginForm.value.rememberMe) {
         Cookies.set("username", loginForm.value.username, { expires: 30 })
-        Cookies.set("password", encrypt(loginForm.value.password), { expires: 30 })
         Cookies.set("rememberMe", loginForm.value.rememberMe, { expires: 30 })
       } else {
         Cookies.remove("username")
-        Cookies.remove("password")
         Cookies.remove("rememberMe")
       }
       userStore.login(loginForm.value).then(() => {
@@ -174,11 +172,10 @@ function getCode() {
 
 function getCookie() {
   const username = Cookies.get("username")
-  const password = Cookies.get("password")
   const rememberMe = Cookies.get("rememberMe")
   loginForm.value = {
     username: username === undefined ? loginForm.value.username : username,
-    password: password === undefined ? loginForm.value.password : decrypt(password),
+    password: "",
     rememberMe: rememberMe === undefined ? false : Boolean(rememberMe)
   }
 }

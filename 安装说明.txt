@@ -1,0 +1,348 @@
+================================================================================
+        星辰健康管理系统 - 安装说明
+================================================================================
+
+【系统版本】v3.9.2
+【更新日期】2026-04-26
+【适用系统】Windows / Linux
+
+================================================================================
+一、系统要求
+================================================================================
+
+1. 硬件要求：
+   - CPU: 2核及以上
+   - 内存: 4GB及以上（推荐8GB）
+   - 硬盘: 10GB可用空间
+
+2. 软件要求：
+   - JDK 17 或以上版本
+   - Node.js 18 或以上版本
+   - MySQL 8.0 或以上版本
+   - Maven 3.8 或以上版本
+   - Redis 6.0 或以上版本
+   - Git（可选）
+
+================================================================================
+二、安装前准备
+================================================================================
+
+1. 安装 JDK 17
+   - 下载地址：https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html
+   - 安装后配置环境变量：
+     JAVA_HOME = JDK安装路径
+     PATH = %JAVA_HOME%\bin
+
+2. 安装 Node.js
+   - 下载地址：https://nodejs.org/
+   - 选择 LTS 长期支持版本
+   - 安装后验证：
+     node -v
+     npm -v
+
+3. 安装 MySQL 8.0
+   - 下载地址：https://dev.mysql.com/downloads/mysql/
+   - 安装时记住 root 密码
+   - 安装后验证：
+     mysql -u root -p
+
+4. 安装 Redis
+   - Windows 下载地址：https://github.com/microsoftarchive/redis/releases
+   - Linux 安装：apt-get install redis-server 或 yum install redis
+   - 安装后验证：
+     redis-cli ping
+
+5. 安装 Maven
+   - 下载地址：https://maven.apache.org/download.cgi
+   - 配置环境变量：
+     MAVEN_HOME = Maven安装路径
+     PATH = %MAVEN_HOME%\bin
+
+================================================================================
+三、数据库初始化
+================================================================================
+
+1. 登录 MySQL 创建数据库：
+   
+   mysql -u root -p
+   输入密码后执行：
+   CREATE DATABASE xingcheng DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+   exit;
+
+2. 按顺序导入 SQL 脚本：
+
+   mysql -u root -p xingcheng < 健康管理系统/XingChen-Vue/sql/ry_20260321.sql
+   mysql -u root -p xingcheng < 健康管理系统/XingChen-Vue/sql/quartz.sql
+   mysql -u root -p xingcheng < 健康管理系统/XingChen-Vue/sql/points_log.sql
+   mysql -u root -p xingcheng < 健康管理系统/XingChen-Vue/sql/redemption.sql
+
+   注意：必须按照以上顺序导入，因为表之间存在依赖关系。
+
+3. 验证数据库：
+   
+   mysql -u root -p
+   use xingcheng;
+   show tables;
+   
+   应该看到多个表，包括：sys_user, sys_dept, sys_role 等。
+
+================================================================================
+四、后端服务安装与启动
+================================================================================
+
+1. 修改数据库配置：
+
+   打开文件：健康管理系统/XingChen-Vue/xingchen-admin/src/main/resources/application-druid.yml
+
+   修改以下内容：
+   url: jdbc:mysql://localhost:3306/xingcheng?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+   username: 你的MySQL用户名（默认root）
+   password: 你的MySQL密码
+
+2. 修改 Redis 配置（如果需要）：
+
+   打开文件：健康管理系统/XingChen-Vue/xingchen-admin/src/main/resources/application.yml
+
+   找到 Redis 配置部分，修改：
+   host: localhost
+   port: 6379
+   password: 你的Redis密码（如果没有设置密码则留空）
+
+3. 编译打包：
+
+   cd 健康管理系统/XingChen-Vue
+   mvn clean package -DskipTests
+
+   首次编译可能需要几分钟下载依赖，请耐心等待。
+   编译成功后会显示 BUILD SUCCESS。
+
+4. 启动后端服务：
+
+   方式一（推荐）：
+   直接运行启动脚本：
+   cd 健康管理系统/XingChen-Vue
+   xc.bat （Windows）
+   或
+   ./xc.sh （Linux）
+
+   方式二：
+   java -jar xingchen-admin/target/xingchen-admin.jar
+
+5. 验证启动：
+
+   看到以下日志表示启动成功：
+   (♥◠‿◠)ﾉﾞ  星辰管理系统启动成功   ლ(´ڡ`ლ)ﾞ
+
+   访问：http://localhost:8080
+   如果能看到接口响应，说明后端启动成功。
+
+   默认端口：8080
+   如需修改端口，编辑 application.yml 中的 server.port
+
+================================================================================
+五、管理后台前端安装与启动
+================================================================================
+
+1. 进入管理后台前端目录：
+
+   cd 健康管理系统/XingChen-Vue3
+
+2. 安装依赖：
+
+   npm install
+
+   首次安装可能需要几分钟，请耐心等待。
+   如果下载速度慢，可以配置淘宝镜像：
+   npm config set registry https://registry.npmmirror.com
+
+3. 修改后端接口地址（如果需要）：
+
+   打开文件：.env.development
+   
+   修改：VUE_APP_BASE_API = 'http://localhost:8080'
+   改为你的后端地址。
+
+4. 启动开发服务器：
+
+   方式一（推荐）：
+   直接运行启动脚本：
+   双击 "启动管理后台前端.bat" 或 "一键启动.bat"
+
+   方式二：
+   npm run dev
+
+5. 访问管理后台：
+
+   浏览器打开：http://localhost:80
+   
+   默认管理员账号：
+   用户名：admin
+   密码：admin123
+
+   首次登录后请及时修改密码！
+
+================================================================================
+六、用户端前端安装与启动
+================================================================================
+
+1. 进入用户端前端目录：
+
+   cd 健康管理系统/XingChen-Vue/xingchen-ui-user
+
+2. 安装依赖：
+
+   npm install
+
+   如果下载速度慢，可以配置淘宝镜像：
+   npm config set registry https://registry.npmmirror.com
+
+3. 修改后端接口地址（如果需要）：
+
+   打开文件：.env.development
+   
+   修改 VITE_API_BASE_URL 为后端地址：
+   VITE_API_BASE_URL = 'http://localhost:8080'
+
+4. 启动开发服务器：
+
+   方式一：
+   npm run dev
+
+   方式二：
+   npx vite
+
+5. 访问用户端：
+
+   浏览器打开：http://localhost:81
+
+   用户可以注册新账号或使用已有账号登录。
+
+================================================================================
+七、生产环境部署
+================================================================================
+
+1. 后端部署：
+
+   # 编译生产包
+   cd 健康管理系统/XingChen-Vue
+   mvn clean package -DskipTests
+
+   # 上传 jar 包到服务器
+   # 在服务器上运行：
+   nohup java -jar xingchen-admin/target/xingchen-admin.jar > app.log 2>&1 &
+
+2. 前端部署：
+
+   管理后台：
+   cd 健康管理系统/XingChen-Vue3
+   npm run build:prod
+   将生成的 dist 目录上传到 Web 服务器
+
+   用户端：
+   cd 健康管理系统/XingChen-Vue/xingchen-ui-user
+   npm run build:prod
+   将生成的 dist 目录上传到 Web 服务器
+
+3. Nginx 配置示例：
+
+   参考文件：健康管理系统/deploy/nginx.conf
+
+   主要配置：
+   - 管理后台部署在 / 路径
+   - 用户端部署在 /user 路径
+   - API 请求代理到后端 http://localhost:8080
+
+4. 配置域名（可选）：
+
+   在 Nginx 中配置 server_name 为你的域名。
+   建议配置 HTTPS 证书以保证安全。
+
+================================================================================
+八、常见问题排查
+================================================================================
+
+问题1：后端启动失败，提示数据库连接错误
+解决：
+- 检查 MySQL 是否正常运行
+- 检查 application-druid.yml 中的数据库地址、用户名、密码是否正确
+- 检查数据库 xingcheng 是否已创建
+
+问题2：前端启动失败，提示 npm install 错误
+解决：
+- 检查 Node.js 版本是否 >= 18
+- 清除缓存：npm cache clean --force
+- 删除 node_modules 和 package-lock.json 后重新安装
+- 尝试配置淘宝镜像源
+
+问题3：访问前端页面显示空白或 404
+解决：
+- 检查后端服务是否正常运行
+- 检查前端 .env.development 中的 API 地址是否正确
+- 打开浏览器开发者工具查看控制台错误信息
+
+问题4：登录后提示 Token 无效
+解决：
+- 检查 Redis 是否正常运行
+- 清除浏览器缓存后重新登录
+- 检查后端日志是否有异常
+
+问题5：端口被占用
+解决：
+- 修改后端端口：编辑 application.yml 中的 server.port
+- 修改管理后台端口：编辑 vite.config.js 中的 server.port
+- 修改用户端端口：编辑 vite.config.js 中的 server.port
+
+问题6：Maven 编译失败
+解决：
+- 检查 JDK 版本是否为 17
+- 配置 Maven 国内镜像（阿里云）
+- 删除 .m2 缓存后重新编译
+
+================================================================================
+九、服务管理
+================================================================================
+
+Windows 环境：
+- 启动后端：双击 健康管理系统/XingChen-Vue/xc.bat
+- 启动管理后台：双击 健康管理系统/XingChen-Vue3/一键启动.bat
+- 启动用户端：双击 健康管理系统/XingChen-Vue/xingchen-ui-user/start.bat
+- 停止所有服务：双击 健康管理系统/XingChen-Vue3/一键停止.bat
+
+Linux 环境：
+- 启动后端：./xc.sh start
+- 停止后端：./xc.sh stop
+- 查看状态：./xc.sh status
+
+================================================================================
+十、默认账号说明
+================================================================================
+
+管理后台：
+用户名：admin
+密码：admin123
+权限：超级管理员，拥有所有权限
+
+用户端：
+用户需通过注册页面创建账号，或由管理员在后台创建。
+
+注意：首次部署后请务必修改默认密码！
+
+================================================================================
+十一、技术支持
+================================================================================
+
+如遇到问题，请检查：
+1. 系统日志：健康管理系统/XingChen-Vue/xingchen-admin/logs/sys-info.log
+2. 前端控制台：浏览器按 F12 打开开发者工具
+3. 后端控制台：查看启动日志
+
+常见日志路径：
+- 后端日志：xingchen-admin/logs/
+- Nginx 日志：/var/log/nginx/
+- MySQL 日志：/var/log/mysql/
+
+================================================================================
+
+祝您使用愉快！
+
+================================================================================

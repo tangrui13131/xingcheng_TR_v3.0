@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xingchen.system.mapper.SysRedemptionMapper">
+    
+    <resultMap type="SysRedemption" id="SysRedemptionResult">
+        <result property="id"            column="id"             />
+        <result property="userId"        column="user_id"        />
+        <result property="productName"   column="product_name"   />
+        <result property="pointsCost"    column="points_cost"    />
+        <result property="status"        column="status"         />
+        <result property="applyTime"     column="apply_time"     />
+        <result property="auditTime"     column="audit_time"     />
+        <result property="auditorId"     column="auditor_id"     />
+        <result property="rejectReason"  column="reject_reason"  />
+        <result property="remark"        column="remark"         />
+        <result property="userName"      column="user_name"      />
+        <result property="deptName"      column="dept_name"      />
+    </resultMap>
+
+    <sql id="selectRedemptionVo">
+        select r.id, r.user_id, r.product_name, r.points_cost, r.status,
+               r.apply_time, r.audit_time, r.auditor_id, r.reject_reason, r.remark,
+               u.nick_name as user_name, d.dept_name as dept_name
+        from sys_redemption r
+             left join sys_user u on r.user_id = u.user_id
+             left join sys_dept d on u.dept_id = d.dept_id
+    </sql>
+
+    <select id="selectRedemptionList" parameterType="SysRedemption" resultMap="SysRedemptionResult">
+        <include refid="selectRedemptionVo"/>
+        <where>  
+            <if test="userId != null "> and r.user_id = #{userId}</if>
+            <if test="status != null and status != ''"> and r.status = #{status}</if>
+            <if test="productName != null and productName != ''"> and r.product_name like concat('%', #{productName}, '%')</if>
+            <if test="params.beginApplyTime != null and params.beginApplyTime != ''"><!-- 开始申请时间检索 -->
+                AND date_format(r.apply_time,'%y%m%d') &gt;= date_format(#{params.beginApplyTime},'%y%m%d')
+            </if>
+            <if test="params.endApplyTime != null and params.endApplyTime != ''"><!-- 结束申请时间检索 -->
+                AND date_format(r.apply_time,'%y%m%d') &lt;= date_format(#{params.endApplyTime},'%y%m%d')
+            </if>
+        </where>
+        order by r.apply_time desc
+    </select>
+    
+    <select id="selectRedemptionById" parameterType="Long" resultMap="SysRedemptionResult">
+        <include refid="selectRedemptionVo"/>
+        where r.id = #{id}
+    </select>
+
+    <select id="selectRedemptionsByUserId" parameterType="Long" resultMap="SysRedemptionResult">
+        <include refid="selectRedemptionVo"/>
+        where r.user_id = #{userId}
+        order by r.apply_time desc
+    </select>
+        
+    <insert id="insertRedemption" parameterType="SysRedemption" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_redemption
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="productName != null">product_name,</if>
+            <if test="pointsCost != null">points_cost,</if>
+            <if test="status != null">status,</if>
+            <if test="applyTime != null">apply_time,</if>
+            <if test="auditTime != null">audit_time,</if>
+            <if test="auditorId != null">auditor_id,</if>
+            <if test="rejectReason != null">reject_reason,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="productName != null">#{productName},</if>
+            <if test="pointsCost != null">#{pointsCost},</if>
+            <if test="status != null">#{status},</if>
+            <if test="applyTime != null">#{applyTime},</if>
+            <if test="auditTime != null">#{auditTime},</if>
+            <if test="auditorId != null">#{auditorId},</if>
+            <if test="rejectReason != null">#{rejectReason},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateRedemption" parameterType="SysRedemption">
+        update sys_redemption
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="productName != null">product_name = #{productName},</if>
+            <if test="pointsCost != null">points_cost = #{pointsCost},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="applyTime != null">apply_time = #{applyTime},</if>
+            <if test="auditTime != null">audit_time = #{auditTime},</if>
+            <if test="auditorId != null">auditor_id = #{auditorId},</if>
+            <if test="rejectReason != null">reject_reason = #{rejectReason},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+</mapper>
